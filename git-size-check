@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Base total
+TOTAL=0
+
+# Colors
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+BLUE=$(tput setaf 4)
+NC=$(tput sgr0)
+
+# Print function runf or each file
+function print_output() {
+    # Extract file size in bytes from git output
+    BYTES=$(stat -c%s "$2")
+
+    # Convert BYTES to human readable format
+    UNIT=$(numfmt --to=iec-i --suffix=B ${BYTES})
+
+    # Increase TOTAL value
+    ((TOTAL = $TOTAL + $BYTES))
+
+    # Print formatted file and size
+    case $1 in
+    M*) printf "%-50s %s\n" "${RED}Modified${NC}: $2" "| ${UNIT}" ;;
+    A*) printf "%-50s %s\n" "${GREEN}Added${NC}: $2" "| ${UNIT}" ;;
+    U*) printf "%-50s %s\n" "${GREEN}Updated${NC}: $2" "| ${UNIT}" ;;
+    D*) printf "%-50s %s\n" "${RED}Deleted${NC}: $2" "| ${UNIT}" ;;
+    C*) printf "%-50s %s\n" "${YELLOW}Copied${NC}: $2" "| ${UNIT}" ;;
+    R*) printf "%-50s %s\n" "${RED}Renamed${NC}: $2" "| ${UNIT}" ;;
+    '??') printf "%-50s %s\n" "${RED}Untracked${NC}: $2" "| ${UNIT}" ;;
+    esac
+}
+
+# For every line of the output run the previous function
+while read status_output; do
+    print_output $status_output
+done < <(git status -uall --porcelain)
+
+# Draw line accross terminal
+printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
+
+# Format and print the total size
+CALCULATED=$(numfmt --to=iec-i --suffix=B ${TOTAL})
+printf "%-50s %s\n" "${BLUE}TOTAL${NC}:" "| ${CALCULATED}"
