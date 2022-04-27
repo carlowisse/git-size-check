@@ -36,10 +36,10 @@
 4. `sudo chmod +x git-size-check`
 
 ## Usage
-Once installed you can call `git size-check` to get a list of file sizes in your terminal.
+Once installed you can call `git size-check` in any repo to get a list of sizes of the files that have been modified; as well as a total.
 
 ## License
-Distributed under the UnlicenselLicense. See [LICENSE](LICENSE.md) for more information.
+Distributed under the Unlicense License. See [LICENSE](LICENSE.md) for more information.
 
 ## Contact
 Carlo Wisse | [Twitter](https://twitter.com/carlowisse) - [Email](mailto:me@carlowisse.com)
